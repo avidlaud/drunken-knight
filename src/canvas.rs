@@ -4,7 +4,7 @@ use std::fmt;
 pub trait Grid {
     fn new(rows: usize, cols: usize) -> Self;
     fn size(&self) -> (usize, usize);
-    fn get(&self, row: usize, col: usize) -> Option<u8>;
+    fn get(&self, row: usize, col: usize) -> Option<i8>;
     fn increment(&mut self, row: usize, col: usize);
     fn decrement(&mut self, row: usize, col: usize);
 }
@@ -13,7 +13,7 @@ pub trait Grid {
 pub struct FlatGrid {
     rows: usize,
     cols: usize,
-    data: Vec<u8>,
+    data: Vec<i8>,
 }
 
 impl Grid for FlatGrid {
@@ -29,7 +29,7 @@ impl Grid for FlatGrid {
         (self.rows, self.cols)
     }
 
-    fn get(&self, row: usize, col: usize) -> Option<u8> {
+    fn get(&self, row: usize, col: usize) -> Option<i8> {
         if row >= self.rows || col >= self.cols {
             None
         } else {
@@ -117,7 +117,7 @@ impl<T: Grid> Canvas<T> {
         (new_r, new_c)
     }
 
-    pub fn simulate(&mut self, a: action::Action) {
+    pub fn simulate(&mut self, a: &action::Action) {
         match a {
             action::Action::Increment(j) => match j {
                 action::Jump::N2E1 => self.increment(self.reposition(-2, 1)),
@@ -151,7 +151,7 @@ impl<T: Grid> fmt::Display for Canvas<T> {
         let (rows, cols) = self.grid.size();
         for row in 0..rows {
             let out: String = (0..cols)
-                .map(|col| self.grid.get(row, col).unwrap().to_string())
+                .map(|col| self.grid.get(row, col).unwrap().to_string() + ",")
                 .collect();
             write!(f, "{}\n", out)?;
         }
