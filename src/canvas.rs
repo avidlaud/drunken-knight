@@ -151,10 +151,26 @@ impl<T: Grid> fmt::Display for Canvas<T> {
         let (rows, cols) = self.grid.size();
         for row in 0..rows {
             let out: String = (0..cols)
-                .map(|col| self.grid.get(row, col).unwrap().to_string() + ",")
-                .collect();
+                .map(|col| alphabet(self.grid.get(row, col).unwrap()))
+                .collect::<String>()
+                .split("")
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>()
+                .join(" ");
             write!(f, "{}\n", out)?;
         }
         Ok(())
+    }
+}
+
+fn alphabet(i: i8) -> char {
+    let chars = [']', '[', '&', '#', '/', '^', '$', '%', '~', '`', ' ', '.', 'o', '+', '=', '*', 'B', 'O', 'X', '@', '\\'];
+    let idx = i + 10;
+    if idx < 0 {
+        'U'
+    } else if idx >= chars.len() as i8 {
+        'H'
+    } else {
+        chars[idx as usize]
     }
 }

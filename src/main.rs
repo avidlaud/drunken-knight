@@ -7,7 +7,6 @@ use crate::canvas::Grid;
 
 fn main() {
     let mut canvas = canvas::Canvas::new(canvas::FlatGrid::new(17, 9));
-    println!("{}", canvas);
 
     let bytes = fs::read("./key.gpg").unwrap();
 
