@@ -2,8 +2,11 @@
 name = "drunken-knight"
 version = "0.1.0"
 edition = "2021"
+authors = ["David Lau"]
+description = "A spinoff of the drunken bishop algorithm to produce random art"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 sha3 = "0.10.1"
+clap = { version = "3.1.6", features = ["derive"] }

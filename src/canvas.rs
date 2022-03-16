@@ -140,31 +140,59 @@ impl<T: Grid> Canvas<T> {
         (new_r, new_c)
     }
 
-    pub fn simulate(&mut self, a: &action::Action) {
-        match a {
-            action::Action::Increment(j) => match j {
-                action::Jump::N2E1 => self.increment(self.bounded_reposition(-2, 1)),
-                action::Jump::N1E2 => self.increment(self.bounded_reposition(-1, 2)),
-                action::Jump::S1E2 => self.increment(self.bounded_reposition(1, 2)),
-                action::Jump::S2E1 => self.increment(self.bounded_reposition(2, 1)),
-                action::Jump::S2W1 => self.increment(self.bounded_reposition(2, -1)),
-                action::Jump::S1W2 => self.increment(self.bounded_reposition(1, -2)),
-                action::Jump::N1W2 => self.increment(self.bounded_reposition(-1, -2)),
-                action::Jump::N2W1 => self.increment(self.bounded_reposition(-2, -1)),
-                action::Jump::Still => self.increment((self.position.0, self.position.1)),
-            },
-            action::Action::Decrement(j) => match j {
-                action::Jump::N2E1 => self.decrement(self.bounded_reposition(-2, 1)),
-                action::Jump::N1E2 => self.decrement(self.bounded_reposition(-1, 2)),
-                action::Jump::S1E2 => self.decrement(self.bounded_reposition(1, 2)),
-                action::Jump::S2E1 => self.decrement(self.bounded_reposition(2, 1)),
-                action::Jump::S2W1 => self.decrement(self.bounded_reposition(2, -1)),
-                action::Jump::S1W2 => self.decrement(self.bounded_reposition(1, -2)),
-                action::Jump::N1W2 => self.decrement(self.bounded_reposition(-1, -2)),
-                action::Jump::N2W1 => self.decrement(self.bounded_reposition(-2, -1)),
-                action::Jump::Still => self.decrement((self.position.0, self.position.1)),
-            },
+    pub fn simulate(&mut self, a: &action::Action, is_unbounded: bool) {
+        if is_unbounded {
+            match a {
+                action::Action::Increment(j) => match j {
+                    action::Jump::N2E1 => self.increment(self.reposition(-2, 1)),
+                    action::Jump::N1E2 => self.increment(self.reposition(-1, 2)),
+                    action::Jump::S1E2 => self.increment(self.reposition(1, 2)),
+                    action::Jump::S2E1 => self.increment(self.reposition(2, 1)),
+                    action::Jump::S2W1 => self.increment(self.reposition(2, -1)),
+                    action::Jump::S1W2 => self.increment(self.reposition(1, -2)),
+                    action::Jump::N1W2 => self.increment(self.reposition(-1, -2)),
+                    action::Jump::N2W1 => self.increment(self.reposition(-2, -1)),
+                    action::Jump::Still => self.increment((self.position.0, self.position.1)),
+                },
+                action::Action::Decrement(j) => match j {
+                    action::Jump::N2E1 => self.decrement(self.reposition(-2, 1)),
+                    action::Jump::N1E2 => self.decrement(self.reposition(-1, 2)),
+                    action::Jump::S1E2 => self.decrement(self.reposition(1, 2)),
+                    action::Jump::S2E1 => self.decrement(self.reposition(2, 1)),
+                    action::Jump::S2W1 => self.decrement(self.reposition(2, -1)),
+                    action::Jump::S1W2 => self.decrement(self.reposition(1, -2)),
+                    action::Jump::N1W2 => self.decrement(self.reposition(-1, -2)),
+                    action::Jump::N2W1 => self.decrement(self.reposition(-2, -1)),
+                    action::Jump::Still => self.decrement((self.position.0, self.position.1)),
+                },
+            }
+        } else {
+            match a {
+                action::Action::Increment(j) => match j {
+                    action::Jump::N2E1 => self.increment(self.bounded_reposition(-2, 1)),
+                    action::Jump::N1E2 => self.increment(self.bounded_reposition(-1, 2)),
+                    action::Jump::S1E2 => self.increment(self.bounded_reposition(1, 2)),
+                    action::Jump::S2E1 => self.increment(self.bounded_reposition(2, 1)),
+                    action::Jump::S2W1 => self.increment(self.bounded_reposition(2, -1)),
+                    action::Jump::S1W2 => self.increment(self.bounded_reposition(1, -2)),
+                    action::Jump::N1W2 => self.increment(self.bounded_reposition(-1, -2)),
+                    action::Jump::N2W1 => self.increment(self.bounded_reposition(-2, -1)),
+                    action::Jump::Still => self.increment((self.position.0, self.position.1)),
+                },
+                action::Action::Decrement(j) => match j {
+                    action::Jump::N2E1 => self.decrement(self.bounded_reposition(-2, 1)),
+                    action::Jump::N1E2 => self.decrement(self.bounded_reposition(-1, 2)),
+                    action::Jump::S1E2 => self.decrement(self.bounded_reposition(1, 2)),
+                    action::Jump::S2E1 => self.decrement(self.bounded_reposition(2, 1)),
+                    action::Jump::S2W1 => self.decrement(self.bounded_reposition(2, -1)),
+                    action::Jump::S1W2 => self.decrement(self.bounded_reposition(1, -2)),
+                    action::Jump::N1W2 => self.decrement(self.bounded_reposition(-1, -2)),
+                    action::Jump::N2W1 => self.decrement(self.bounded_reposition(-2, -1)),
+                    action::Jump::Still => self.decrement((self.position.0, self.position.1)),
+                },
+            }
         }
+        
     }
 }
 
