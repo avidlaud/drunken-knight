@@ -198,18 +198,20 @@ impl<T: Grid> Canvas<T> {
 
 impl<T: Grid> fmt::Display for Canvas<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Grid:\n")?;
         let (rows, cols) = self.grid.size();
+        write!(f, "Grid:\n")?;
+        write!(f, "+{}+\n", "-".repeat(cols))?;
         for row in 0..rows {
             let out: String = (0..cols)
                 .map(|col| alphabet(self.grid.get(row, col).unwrap()))
-                .collect::<String>()
-                .split("")
-                .map(|s| s.to_string())
-                .collect::<Vec<String>>()
-                .join(" ");
-            write!(f, "{}\n", out)?;
+                .collect::<String>();
+                // .split("")
+                // .map(|s| s.to_string())
+                // .collect::<Vec<String>>()
+                // .join(" ");
+            write!(f, "|{}|\n", out)?;
         }
+        write!(f, "+{}+\n", "-".repeat(cols))?;
         Ok(())
     }
 }

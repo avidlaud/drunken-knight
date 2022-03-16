@@ -15,11 +15,11 @@ struct Args {
     unbounded: bool,
 
     // Height of the canvas
-    #[clap(default_value_t = 7, short, long, validator = is_valid_size)]
+    #[clap(default_value_t = 9, short, long, validator = is_valid_size)]
     height: usize,
 
     // Width of the canvas
-    #[clap(default_value_t = 7, short, long, validator = is_valid_size)]
+    #[clap(default_value_t = 17, short, long, validator = is_valid_size)]
     width: usize,
 
     // File to hash
