@@ -7,7 +7,7 @@ use sha3::{Digest, Sha3_512};
 use crate::canvas::Grid;
 
 fn main() {
-    let mut canvas = canvas::Canvas::new(canvas::FlatGrid::new(5, 5));
+    let mut canvas = canvas::Canvas::new(canvas::FlatGrid::new(7, 7));
 
     let bytes = fs::read("./key.gpg").unwrap();
 

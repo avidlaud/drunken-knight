@@ -1,5 +1,6 @@
 use crate::action;
 use std::fmt;
+use std::cmp;
 
 pub trait Grid {
     fn new(rows: usize, cols: usize) -> Self;
@@ -77,6 +78,7 @@ impl<T: Grid> Canvas<T> {
         self.position = (row, col);
     }
 
+    // Overflows jumps over the edge of the canvas to the other side.
     fn reposition(&self, move_row: isize, move_col: isize) -> (usize, usize) {
         let (n_row, n_col) = self.grid.size();
         let (r, c) = self.position;
@@ -106,7 +108,7 @@ impl<T: Grid> Canvas<T> {
             } else {
                 c - m_col
             }
-        } else {
+        } else { // East move
             // Jumps off grid in the east direction
             if c + m_col >= n_col {
                 c + m_col - n_col
@@ -117,28 +119,49 @@ impl<T: Grid> Canvas<T> {
         (new_r, new_c)
     }
 
+    // Does not allow jumps past the edges of the canvas.
+    fn bounded_reposition(&self, move_row: isize, move_col: isize) -> (usize, usize) {
+        let (n_row, n_col) = self.grid.size();
+        let (r, c) = self.position;
+
+        let m_row = move_row.abs() as usize;
+        let m_col = move_col.abs() as usize;
+
+        let new_r = if move_row < 0 { // North move
+            sub_or_zero(r, m_row)
+        } else { // South move
+            cmp::min(r + m_row, n_row - 1)
+        };
+        let new_c = if move_col < 0 { // West move
+            sub_or_zero(c, m_col)
+        } else { // East move
+            cmp::min(c + m_col, n_col - 1)
+        };
+        (new_r, new_c)
+    }
+
     pub fn simulate(&mut self, a: &action::Action) {
         match a {
             action::Action::Increment(j) => match j {
-                action::Jump::N2E1 => self.increment(self.reposition(-2, 1)),
-                action::Jump::N1E2 => self.increment(self.reposition(-1, 2)),
-                action::Jump::S1E2 => self.increment(self.reposition(1, 2)),
-                action::Jump::S2E1 => self.increment(self.reposition(2, 1)),
-                action::Jump::S2W1 => self.increment(self.reposition(2, -1)),
-                action::Jump::S1W2 => self.increment(self.reposition(1, -2)),
-                action::Jump::N1W2 => self.increment(self.reposition(-1, 2)),
-                action::Jump::N2W1 => self.increment(self.reposition(-2, 1)),
+                action::Jump::N2E1 => self.increment(self.bounded_reposition(-2, 1)),
+                action::Jump::N1E2 => self.increment(self.bounded_reposition(-1, 2)),
+                action::Jump::S1E2 => self.increment(self.bounded_reposition(1, 2)),
+                action::Jump::S2E1 => self.increment(self.bounded_reposition(2, 1)),
+                action::Jump::S2W1 => self.increment(self.bounded_reposition(2, -1)),
+                action::Jump::S1W2 => self.increment(self.bounded_reposition(1, -2)),
+                action::Jump::N1W2 => self.increment(self.bounded_reposition(-1, -2)),
+                action::Jump::N2W1 => self.increment(self.bounded_reposition(-2, -1)),
                 action::Jump::Still => self.increment((self.position.0, self.position.1)),
             },
             action::Action::Decrement(j) => match j {
-                action::Jump::N2E1 => self.decrement(self.reposition(-2, 1)),
-                action::Jump::N1E2 => self.decrement(self.reposition(-1, 2)),
-                action::Jump::S1E2 => self.decrement(self.reposition(1, 2)),
-                action::Jump::S2E1 => self.decrement(self.reposition(2, 1)),
-                action::Jump::S2W1 => self.decrement(self.reposition(2, -1)),
-                action::Jump::S1W2 => self.decrement(self.reposition(1, -2)),
-                action::Jump::N1W2 => self.decrement(self.reposition(-1, 2)),
-                action::Jump::N2W1 => self.decrement(self.reposition(-2, 1)),
+                action::Jump::N2E1 => self.decrement(self.bounded_reposition(-2, 1)),
+                action::Jump::N1E2 => self.decrement(self.bounded_reposition(-1, 2)),
+                action::Jump::S1E2 => self.decrement(self.bounded_reposition(1, 2)),
+                action::Jump::S2E1 => self.decrement(self.bounded_reposition(2, 1)),
+                action::Jump::S2W1 => self.decrement(self.bounded_reposition(2, -1)),
+                action::Jump::S1W2 => self.decrement(self.bounded_reposition(1, -2)),
+                action::Jump::N1W2 => self.decrement(self.bounded_reposition(-1, -2)),
+                action::Jump::N2W1 => self.decrement(self.bounded_reposition(-2, -1)),
                 action::Jump::Still => self.decrement((self.position.0, self.position.1)),
             },
         }
@@ -173,4 +196,12 @@ fn alphabet(i: i8) -> char {
     } else {
         chars[idx as usize]
     }
+}
+
+// Subtract the two unsigned integers, return 0 if it would overflow
+fn sub_or_zero(a: usize, b: usize) -> usize {
+    if b >= a {
+        return 0
+    }
+    a - b
 }
